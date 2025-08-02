@@ -7,6 +7,9 @@ export function generateAmazonUrl(mangaTitle: string, volume?: number): string {
     .replace(/\s+/g, '+') // Replace spaces with +
     .trim()
   
+  // Add "manga" to the search term to avoid confusion with other products
+  searchTerm += '+manga'
+  
   if (volume) {
     searchTerm += `+volume+${volume}`
   }

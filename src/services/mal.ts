@@ -1,25 +1,37 @@
 import type { MALSearchResponse, MALManga } from '@/types/manga'
 
-const MAL_BASE_URL = 'https://api.myanimelist.net/v2'
+// Use local proxy in development, direct API in production
+const isDevelopment = (import.meta as any).env?.DEV || false
+const MAL_BASE_URL = isDevelopment ? '/api/mal' : 'https://api.myanimelist.net/v2'
 
 export class MALService {
   private clientId: string
 
   constructor() {
-    this.clientId = import.meta.env.VITE_MAL_CLIENT_ID
+    // Use environment variable with fallback for development
+    this.clientId = (import.meta as any).env?.VITE_MAL_CLIENT_ID || ''
     if (!this.clientId) {
-      throw new Error('VITE_MAL_CLIENT_ID is not defined in environment variables')
+      console.warn('VITE_MAL_CLIENT_ID is not defined in environment variables')
+    } else {
+      console.log('MAL Client ID loaded successfully')
     }
   }
 
   private async makeRequest(endpoint: string): Promise<any> {
-    const response = await fetch(`${MAL_BASE_URL}${endpoint}`, {
-      headers: {
-        'X-MAL-CLIENT-ID': this.clientId
-      }
-    })
+    const url = `${MAL_BASE_URL}${endpoint}`
+    
+    // Always include the client ID header
+    const headers: Record<string, string> = {
+      'X-MAL-CLIENT-ID': this.clientId
+    }
+    
+    console.log('Making request to:', url)
+    console.log('Headers:', headers)
+    
+    const response = await fetch(url, { headers })
 
     if (!response.ok) {
+      console.error('Request failed:', response.status, response.statusText)
       throw new Error(`MAL API error: ${response.status} ${response.statusText}`)
     }
 

@@ -14,7 +14,8 @@
         <div class="flex space-x-4">
           <div class="flex-1">
             <Input
-              v-model="searchQuery"
+              :value="searchQuery"
+              @input="(e) => searchQuery = (e.target as HTMLInputElement).value"
               placeholder="Cerca manga (es. Berserk, One Piece...)"
               @keyup.enter="searchManga()"
             />

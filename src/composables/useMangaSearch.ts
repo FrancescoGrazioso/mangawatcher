@@ -13,10 +13,22 @@ export function useMangaSearch() {
   const hasQuery = computed(() => searchQuery.value.trim().length > 0)
 
   const searchManga = async (query?: string) => {
-    const searchTerm = query || searchQuery.value.trim()
+    // Use provided query or current searchQuery value
+    let searchTerm = query
+    if (!searchTerm) {
+      searchTerm = searchQuery.value?.trim() || ''
+    }
+    
+    console.log('Search called with:', { 
+      providedQuery: query, 
+      searchQueryValue: searchQuery.value, 
+      finalSearchTerm: searchTerm,
+      searchQueryLength: searchQuery.value?.length || 0
+    })
     
     if (!searchTerm) {
       error.value = 'Inserisci un termine di ricerca'
+      console.warn('Search term is empty')
       return
     }
 

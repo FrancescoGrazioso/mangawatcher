@@ -190,7 +190,7 @@ import type { WatchlistManga } from '@/types/manga'
 const router = useRouter()
 const watchlistStore = useWatchlistStore()
 
-const selectedStatus = ref<'all' | 'reading' | 'completed' | 'on_hold' | 'dropped' | 'plan_to_read'>('all')
+const selectedStatus = ref<string>('all')
 const isRefreshing = ref(false)
 
 const statusOptions = [
@@ -206,7 +206,7 @@ const filteredWatchlist = computed(() => {
   if (selectedStatus.value === 'all') {
     return watchlistStore.watchlist
   }
-  return watchlistStore.watchlist.filter((manga: any) => manga.status === selectedStatus.value)
+  return watchlistStore.watchlist.filter((manga: WatchlistManga) => manga.status === selectedStatus.value)
 })
 
 const readingCount = computed(() => 
@@ -290,8 +290,8 @@ const refreshWatchlist = async () => {
 }
 
 onMounted(() => {
-  // Load watchlist from localStorage
-  watchlistStore.$reset()
+  // Watchlist is automatically loaded from localStorage in the store
+  // No need to call $reset() as it would clear the data
 })
 </script>
 
